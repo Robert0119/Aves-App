@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "228703491971",
+    "project_id": "appavesv2",
+    "storage_bucket": "appavesv2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228703491971:android:f1681f1cd9b9e575a508b6",
+        "android_client_info": {
+          "package_name": "com.example.app_aves"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGJC-J0N86eHi_49UfkiMjoj73DL7pX1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:228703491971:android:75a8b8982ecf483aa508b6",
+        "android_client_info": {
+          "package_name": "com.example.avesapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGJC-J0N86eHi_49UfkiMjoj73DL7pX1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
