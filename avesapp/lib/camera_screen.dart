@@ -37,7 +37,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _takePicture() async {
     await _requestPermissions();
-    
+
     try {
       final XFile? image = await _picker.pickImage(
         source: ImageSource.camera,
@@ -45,15 +45,15 @@ class _CameraScreenState extends State<CameraScreen> {
         maxWidth: 1024,
         maxHeight: 1024,
       );
-      
+
       if (image != null) {
         setState(() {
           _imageFile = image;
         });
-        
+
         // Obtener ubicación automáticamente
         await _getCurrentLocation();
-        
+
         // Mostrar diálogo de confirmación inmediatamente
         _showUploadDialog();
       }
@@ -66,7 +66,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _pickFromGallery() async {
     await _requestPermissions();
-    
+
     try {
       final XFile? image = await _picker.pickImage(
         source: ImageSource.gallery,
@@ -74,15 +74,15 @@ class _CameraScreenState extends State<CameraScreen> {
         maxWidth: 1024,
         maxHeight: 1024,
       );
-      
+
       if (image != null) {
         setState(() {
           _imageFile = image;
         });
-        
+
         // Obtener ubicación
         await _getCurrentLocation();
-        
+
         // Mostrar diálogo de confirmación
         _showUploadDialog();
       }
@@ -95,11 +95,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
   Future<void> _getCurrentLocation() async {
     print('Iniciando obtención de ubicación...');
-    
+
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       print('Servicio de ubicación habilitado: $serviceEnabled');
-      
+
       if (!serviceEnabled) {
         print('Servicios de ubicación desactivados');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -110,11 +110,11 @@ class _CameraScreenState extends State<CameraScreen> {
 
       LocationPermission permission = await Geolocator.checkPermission();
       print('Permiso actual: $permission');
-      
+
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
         print('Permiso después de solicitar: $permission');
-        
+
         if (permission == LocationPermission.denied) {
           print('Permisos de ubicación denegados');
           ScaffoldMessenger.of(context).showSnackBar(
@@ -128,7 +128,8 @@ class _CameraScreenState extends State<CameraScreen> {
         print('Permisos de ubicación denegados permanentemente');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Permisos de ubicación denegados permanentemente. Ve a configuración para habilitarlos.'),
+            content: Text(
+                'Permisos de ubicación denegados permanentemente. Ve a configuración para habilitarlos.'),
           ),
         );
         return;
@@ -139,22 +140,22 @@ class _CameraScreenState extends State<CameraScreen> {
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 10),
       );
-      
+
       print('Ubicación obtenida: ${position.latitude}, ${position.longitude}');
       print('Position object: $position');
       print('Accuracy: ${position.accuracy}m');
-      
+
       setState(() {
         _position = position;
       });
-      
+
       // Verificar que se guardó correctamente
-      print('Position guardado en estado: lat=${_position?.latitude}, lng=${_position?.longitude}');
-      
+      print(
+          'Position guardado en estado: lat=${_position?.latitude}, lng=${_position?.longitude}');
     } catch (e) {
       print('Error detallado al obtener ubicación: $e');
       print('Tipo de error: ${e.runtimeType}');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error al obtener ubicación: $e')),
@@ -175,10 +176,11 @@ class _CameraScreenState extends State<CameraScreen> {
       if (user == null) throw Exception('Usuario no autenticado');
 
       print('Subiendo imagen...');
-      
+
       // Crear referencia con nombre único
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final storageRef = FirebaseStorage.instance.ref().child('posts/$fileName');
+      final storageRef =
+          FirebaseStorage.instance.ref().child('posts/$fileName');
 
       // Configurar metadata explícitamente para evitar el error
       final metadata = SettableMetadata(
@@ -188,7 +190,7 @@ class _CameraScreenState extends State<CameraScreen> {
 
       // Subir archivo con metadata especificado
       final uploadTask = storageRef.putFile(File(_imageFile!.path), metadata);
-      
+
       // Escuchar el progreso de subida (opcional)
       uploadTask.snapshotEvents.listen((TaskSnapshot snapshot) {
         double progress = snapshot.bytesTransferred / snapshot.totalBytes;
@@ -241,14 +243,14 @@ class _CameraScreenState extends State<CameraScreen> {
             duration: Duration(seconds: 3),
           ),
         );
-        
+
         // Limpiar datos después de subida exitosa
         setState(() {
           _imageFile = null;
           _position = null;
           _descriptionController.clear();
         });
-        
+
         Navigator.pop(context);
       }
     } catch (e) {
@@ -309,18 +311,22 @@ class _CameraScreenState extends State<CameraScreen> {
                 Row(
                   children: [
                     Icon(
-                      _position != null ? Icons.location_on : Icons.location_off,
+                      _position != null
+                          ? Icons.location_on
+                          : Icons.location_off,
                       color: _position != null ? Colors.green : Colors.grey,
                       size: 16,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(
-                        _position != null 
+                        _position != null
                             ? 'Ubicación capturada'
                             : 'Sin ubicación',
                         style: TextStyle(
-                          color: _position != null ? Colors.green[700] : Colors.grey,
+                          color: _position != null
+                              ? Colors.green[700]
+                              : Colors.grey,
                           fontSize: 12,
                         ),
                       ),
@@ -332,26 +338,30 @@ class _CameraScreenState extends State<CameraScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: _isLoading ? null : () {
-                Navigator.of(context).pop();
-                setState(() {
-                  _imageFile = null;
-                  _position = null;
-                  _descriptionController.clear();
-                });
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                      setState(() {
+                        _imageFile = null;
+                        _position = null;
+                        _descriptionController.clear();
+                      });
+                    },
               child: const Text('Cancelar'),
             ),
             ElevatedButton(
-              onPressed: _isLoading ? null : () {
-                Navigator.of(context).pop();
-                _uploadPost();
-              },
+              onPressed: _isLoading
+                  ? null
+                  : () {
+                      Navigator.of(context).pop();
+                      _uploadPost();
+                    },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2E7D32),
                 foregroundColor: Colors.white,
               ),
-              child: _isLoading 
+              child: _isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
@@ -377,7 +387,7 @@ class _CameraScreenState extends State<CameraScreen> {
         backgroundColor: const Color(0xFF2E7D32),
         foregroundColor: Colors.white,
       ),
-      body: _isLoading 
+      body: _isLoading
           ? const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -395,11 +405,56 @@ class _CameraScreenState extends State<CameraScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const SizedBox(height: 40),
-                    const Icon(
-                      Icons.camera_alt,
-                      size: 128,
-                      color: Colors.grey,
+
+                    // --- NUEVO DISEÑO DEL ÍCONO PRINCIPAL ---
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Círculo de fondo verde suave
+                        Container(
+                          width: 140,
+                          height: 140,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE8F5E9),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        // Ícono de cámara más estilizado y verde
+                        const Icon(
+                          Icons.camera_alt_rounded,
+                          size: 65,
+                          color: Color(0xFF2E7D32),
+                        ),
+                        // Insignia de naturaleza (hoja) para romper lo aburrido
+                        Positioned(
+                          top: 15,
+                          right: 15,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.3),
+                                  spreadRadius: 1,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons
+                                  .eco, // Puedes cambiar esto por un Image.asset si quieres usar tu colibrí
+                              size: 24,
+                              color: Color(0xFF4CAF50),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
+                    // --- FIN DEL NUEVO DISEÑO ---
+
                     const SizedBox(height: 32),
                     const Text(
                       'Comparte una foto de ave',
@@ -409,55 +464,54 @@ class _CameraScreenState extends State<CameraScreen> {
                         color: Color(0xFF2E7D32),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12), // Reduje un poco este espacio
                     const Text(
-                      'Toma una foto o selecciona desde galería',
+                      'Toma una foto o selecciona desde la galería',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
                       ),
                     ),
-                    const SizedBox(height: 48),
-                    
-                    // Botones de acción
+                    const SizedBox(height: 40),
+
+                    // Botones de acción (Mantenemos tu jerarquía, que ya era buena)
                     Column(
                       children: [
                         SizedBox(
-                          width: 200,
+                          width:
+                              220, // Lo hice un poco más ancho para que respire el texto
                           child: ElevatedButton.icon(
-                            onPressed: _takePicture,
+                            onPressed:
+                                _takePicture, // Asegúrate de tener esta función definida
                             icon: const Icon(Icons.camera_alt),
-                            label: const Text('Tomar foto'),
+                            label: const Text('Tomar foto',
+                                style: TextStyle(fontSize: 16)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF2E7D32),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              elevation: 2, // Pequeña sombra al botón principal
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
                             ),
                           ),
                         ),
-                        
                         const SizedBox(height: 16),
-                        
                         SizedBox(
-                          width: 200,
+                          width: 220,
                           child: OutlinedButton.icon(
-                            onPressed: _pickFromGallery,
+                            onPressed:
+                                _pickFromGallery, // Asegúrate de tener esta función definida
                             icon: const Icon(Icons.photo_library),
-                            label: const Text('Desde galería'),
+                            label: const Text('Desde galería',
+                                style: TextStyle(fontSize: 16)),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFF2E7D32),
-                              side: const BorderSide(color: Color(0xFF2E7D32)),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
+                              side: const BorderSide(
+                                  color: Color(0xFF2E7D32), width: 1.5),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25),
                               ),
@@ -466,48 +520,78 @@ class _CameraScreenState extends State<CameraScreen> {
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 48),
-                    
-                    // Información adicional
+
+                    // --- NUEVO DISEÑO DE LA TARJETA DE INFORMACIÓN ---
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 16),
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20), // Más espacio interior
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.grey.withOpacity(0.1),
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: const Offset(0, 2),
+                            color: Colors.grey.withOpacity(
+                                0.08), // Sombra más suave y elegante
+                            spreadRadius: 2,
+                            blurRadius: 15,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                      child: const Column(
+                      child: Column(
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.location_on, color: Color(0xFF2E7D32), size: 20),
-                              SizedBox(width: 8),
-                              Expanded(
+                              // Ícono con fondo
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE8F5E9),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.location_on,
+                                    color: Color(0xFF2E7D32), size: 22),
+                              ),
+                              const SizedBox(width: 16),
+                              const Expanded(
                                 child: Text(
                                   'Se capturará la ubicación automáticamente',
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                      height: 1.3),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 8),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Divider(
+                                height: 1,
+                                indent: 50), // Pequeña línea divisoria
+                          ),
                           Row(
                             children: [
-                              Icon(Icons.psychology, color: Color(0xFF2E7D32), size: 20),
-                              SizedBox(width: 8),
-                              Expanded(
+                              // Ícono con fondo
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE8F5E9),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(Icons.psychology,
+                                    color: Color(0xFF2E7D32), size: 22),
+                              ),
+                              const SizedBox(width: 16),
+                              const Expanded(
                                 child: Text(
                                   'Podrás identificar la especie con IA después',
-                                  style: TextStyle(fontSize: 12),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black87,
+                                      height: 1.3),
                                 ),
                               ),
                             ],
@@ -515,7 +599,8 @@ class _CameraScreenState extends State<CameraScreen> {
                         ],
                       ),
                     ),
-                    
+                    // --- FIN DE LA TARJETA ---
+
                     const SizedBox(height: 40),
                   ],
                 ),

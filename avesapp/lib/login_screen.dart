@@ -180,8 +180,9 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 40),
 
               // Logo
+              // Texto del Logo
               const Text(
-                'AvesApp',
+                'Aleteo', // Cambia esto por el nombre de tu app
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -191,6 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               const SizedBox(height: 20),
 
+              // Imagen del Logo
               Container(
                 width: 100,
                 height: 100,
@@ -205,14 +207,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       offset: const Offset(0, 3),
                     ),
                   ],
+                  // Aquí agregamos tu imagen JPG
+                  image: const DecorationImage(
+                    image: AssetImage(
+                        'assets/colibi.jpeg'), // Asegúrate de que el nombre coincida
+                    fit: BoxFit
+                        .cover, // Esto hace que la imagen llene bien el círculo
+                  ),
                 ),
-                child: const Icon(
-                  Icons.flight_takeoff,
-                  size: 50,
-                  color: Color(0xFF2E7D32),
-                ),
+                // Eliminamos el 'child: const Icon(...)' porque la imagen ya está de fondo
               ),
-
               const SizedBox(height: 50),
 
               // --- FORMULARIO ---
@@ -347,40 +351,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
 
                     const SizedBox(height: 20),
-
-                    // -------------------------
-                    // BOTÓN INICIAR CON GOOGLE
-                    // -------------------------
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _signInWithGoogle,
-                        icon: Image.asset(
-                          'assets/google.png',
-                          height: 24,
-                        ),
-                        label: const Text(
-                          'Iniciar sesión con Google',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                            side: const BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 30),
 
               // Link registro
               Row(

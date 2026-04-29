@@ -29,6 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         backgroundColor: const Color(0xFF2E7D32),
         foregroundColor: Colors.white,
+        elevation:
+            0, // Quitamos la sombra del AppBar para que se fusione con el fondo blanco
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -45,20 +47,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: Column(
         children: [
+          // --- NUEVO DISEÑO DE CABECERA ---
           Container(
             width: double.infinity,
-            color: Colors.white,
-            padding: const EdgeInsets.all(24.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 30, left: 24, right: 24),
             child: Column(
               children: [
+                // Avatar con inicial
+                Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border:
+                        Border.all(color: const Color(0xFF2E7D32), width: 2),
+                  ),
+                  child: CircleAvatar(
+                    radius: 45,
+                    backgroundColor: const Color(0xFFE8F5E9),
+                    child: Text(
+                      user?.displayName?.isNotEmpty == true
+                          ? user!.displayName![0].toUpperCase()
+                          : 'U',
+                      style: const TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF2E7D32),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Nombre del usuario
                 Text(
                   user?.displayName ?? 'Usuario',
                   style: const TextStyle(
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    letterSpacing: -0.5,
                   ),
                 ),
+
                 const SizedBox(height: 4),
+
+                // Correo del usuario
                 Text(
                   user?.email ?? 'usuario@email.com',
                   style: TextStyle(
@@ -66,7 +115,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: Colors.grey[600],
                   ),
                 ),
-                const SizedBox(height: 16),
+
+                const SizedBox(height: 24),
+
+                // Estadísticas (Contador de publicaciones bien centrado)
                 StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('posts')
@@ -79,7 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildStatItem('Publicaciones', postCount.toString()),
-                        const SizedBox(width: 40),
+                        // Eliminado el SizedBox(width: 40) que rompía el centrado
                       ],
                     );
                   },
@@ -87,7 +139,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 8),
+
+          const SizedBox(height: 10), // Espacio antes de la cuadrícula de fotos
+
+          // --- FIN NUEVO DISEÑO DE CABECERA ---
+
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
@@ -144,7 +200,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
                     final post = posts[index];
-
                     final data = post.data() as Map<String, dynamic>;
 
                     return GestureDetector(
@@ -163,7 +218,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   loadingBuilder:
                                       (context, child, loadingProgress) {
                                     if (loadingProgress == null) return child;
-
                                     return const Center(
                                       child: CircularProgressIndicator(
                                         color: Color(0xFF2E7D32),
@@ -192,30 +246,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: SizedBox(
-            height: 52,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              onPressed: _signOutAndGoToLogin,
-              child: const Text(
-                'Cerrar sesión',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -224,12 +254,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(
           value,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
         ),
       ],
     );
@@ -280,7 +310,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Editar descripción'),
                 onTap: () {
                   Navigator.pop(context);
-
                   _showEditDescriptionDialog(
                       context, postId, data['description'] ?? '');
                 },
@@ -290,7 +319,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 title: const Text('Eliminar publicación'),
                 onTap: () {
                   Navigator.pop(context);
-
                   _showDeleteConfirmation(context, postId);
                 },
               ),
@@ -333,7 +361,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             TextButton(
               onPressed: () {
                 _updatePostDescription(postId, controller.text.trim());
-
                 Navigator.pop(context);
               },
               child: const Text(
@@ -363,7 +390,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             TextButton(
               onPressed: () {
                 _deletePost(postId);
-
                 Navigator.pop(context);
               },
               child:
@@ -423,39 +449,5 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       }
     }
-  }
-
-  // -------------------------------------------------------------
-
-  // 🔥 FUNCIÓN REAL DE CERRAR SESIÓN (Firebase + Google)
-
-  // -------------------------------------------------------------
-
-  Future<void> _signOutAndGoToLogin() async {
-    try {
-      // 1. CIERRE FIREBASE
-
-      await FirebaseAuth.instance.signOut();
-
-      // 2. CIERRE GOOGLE (IMPORTANTE)
-
-      final GoogleSignIn googleSignIn = GoogleSignIn();
-
-      await googleSignIn.disconnect();
-
-      await googleSignIn.signOut();
-    } catch (e) {
-      print("Error cerrando sesión: $e");
-    }
-
-    if (!mounted) return;
-
-    // 3. VOLVER A LOGIN
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const AuthWrapper()),
-      (route) => false,
-    );
   }
 }

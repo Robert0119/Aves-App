@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'auth_wrapper.dart';
 
 class ProfileSettingsScreen extends StatefulWidget {
   const ProfileSettingsScreen({super.key});
@@ -499,21 +500,39 @@ class _ProfileSettingsScreenState extends State<ProfileSettingsScreen> {
   void _showLogoutDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
+        // Usamos dialogContext para no confundirlo con el context de la pantalla
         return AlertDialog(
           title: const Text('Cerrar sesión'),
           content: const Text('¿Estás seguro de que quieres cerrar sesión?'),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(
+                  dialogContext), // Solo cierra el cuadro de diálogo
               child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () async {
-                Navigator.pop(context);
-                await FirebaseAuth.instance.signOut();
-                // Aquí deberías redirigir al Login, dependiendo de cómo manejes tus rutas
-                // Navigator.pushReplacementNamed(context, '/login');
+                // 1. Cerramos el cuadro de diálogo primero
+                Navigator.pop(dialogContext);
+
+                // 2. Ejecutamos el cierre de sesión de Firebase
+                try {
+                  await FirebaseAuth.instance.signOut();
+                  // Nota: Eliminé la parte de GoogleSignIn porque me comentaste que ya la quitaste de la app.
+                } catch (e) {
+                  print("Error cerrando sesión: $e");
+                }
+
+                // Verificamos si el widget sigue montado en la pantalla
+                if (!mounted) return;
+
+                // 3. Redirigimos al Login (AuthWrapper) y eliminamos el historial de pantallas
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AuthWrapper()),
+                  (route) => false,
+                );
               },
               child: const Text(
                 'Cerrar sesión',

@@ -57,13 +57,21 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/bird.jpeg" # La ruta de tu imagen JPG del colibrí
+  adaptive_icon_background: "#FFFFFF" # Color de fondo (blanco queda muy bien con tu logo)
+  adaptive_icon_foreground: "assets/bird.jpeg" # Para Android moderno
 
 flutter:
   uses-material-design: true
 
   # Assets del modelo de IA
   assets:
-    - assets/modelo_colibri.tflite
+    - assets/colibi.jpeg
 
   # Fuentes personalizadas (opcional)
   # fonts:
@@ -72,3 +80,4 @@ flutter:
   #       - asset: assets/fonts/CustomFont-Regular.ttf
   #       - asset: assets/fonts/CustomFont-Bold.ttf
   #         weight: 700
+

@@ -123,8 +123,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 20),
 
               // Logo y título
+              // Texto del Logo
               const Text(
-                'AvesApp',
+                'Aleteo',
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
@@ -132,15 +133,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-              // Icono del ave
+              // Imagen del Logo
               Container(
-                width: 80,
-                height: 80,
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: BorderRadius.circular(50),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.3),
@@ -149,25 +150,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       offset: const Offset(0, 3),
                     ),
                   ],
+                  // Aquí agregamos tu imagen JPG
+                  image: const DecorationImage(
+                    image: AssetImage(
+                        'assets/colibi.jpeg'), // Asegúrate de que el nombre coincida
+                    fit: BoxFit
+                        .cover, // Esto hace que la imagen llene bien el círculo
+                  ),
                 ),
-                child: const Icon(
-                  Icons.flight_takeoff,
-                  size: 40,
-                  color: Color(0xFF2E7D32),
-                ),
+                // Eliminamos el 'child: const Icon(...)' porque la imagen ya está de fondo
               ),
 
               const SizedBox(height: 20),
 
               // Título de registro
-              const Text(
-                'Regístrate',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
 
               const SizedBox(height: 30),
 
